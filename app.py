@@ -3,58 +3,44 @@ import joblib
 import pandas as pd
 
 # -------------------------------
-# LOAD MODEL (PIPELINE SAFE)
+# LOAD MODEL
 # -------------------------------
 try:
     model = joblib.load("model.pkl")
 except:
-    st.error("❌ Model not found or incompatible. Please upload correct model.pkl")
+    st.error("❌ model.pkl not found or incompatible. Please upload correct file.")
     st.stop()
 
-# -------------------------------
-# PAGE CONFIG
-# -------------------------------
 st.set_page_config(page_title="AI Churn Predictor", layout="wide")
 
 # -------------------------------
-# PREMIUM INLINE CSS 🔥
+# PREMIUM UI (INLINE CSS)
 # -------------------------------
 st.markdown("""
 <style>
-
 body {
     background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: white;
 }
-
-/* Title */
 .title {
     text-align: center;
-    font-size: 48px;
+    font-size: 45px;
     font-weight: bold;
     background: linear-gradient(90deg, #38bdf8, #6366f1);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: 20px;
 }
-
-/* Card */
 .card {
     background: rgba(255,255,255,0.05);
-    padding: 30px;
+    padding: 25px;
     border-radius: 20px;
-    backdrop-filter: blur(20px);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
     margin-bottom: 20px;
 }
-
-/* Section title */
 .section {
-    font-size: 20px;
+    font-size: 18px;
     color: #38bdf8;
     margin-bottom: 10px;
 }
-
-/* Result */
 .result {
     padding: 25px;
     border-radius: 15px;
@@ -62,17 +48,13 @@ body {
     font-size: 24px;
     font-weight: bold;
 }
-
-/* Button */
 .stButton>button {
     width: 100%;
-    height: 55px;
-    border-radius: 12px;
+    height: 50px;
+    border-radius: 10px;
     background: linear-gradient(90deg, #6366f1, #8b5cf6);
     color: white;
-    font-size: 18px;
 }
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -82,15 +64,12 @@ body {
 st.markdown('<div class="title">🚀 AI Customer Churn Predictor</div>', unsafe_allow_html=True)
 
 # -------------------------------
-# INPUT CARD
+# INPUT SECTION
 # -------------------------------
 st.markdown('<div class="card">', unsafe_allow_html=True)
 
 col1, col2, col3 = st.columns(3)
 
-# -------------------------------
-# USER FRIENDLY INPUTS
-# -------------------------------
 with col1:
     st.markdown('<div class="section">👤 Customer Info</div>', unsafe_allow_html=True)
     gender = st.radio("Gender", ["Male", "Female"])
@@ -113,35 +92,30 @@ with col3:
     support = st.checkbox("Tech Support")
     tv = st.checkbox("Streaming TV")
     movies = st.checkbox("Streaming Movies")
-    contract = st.selectbox("Contract Type", ["Month-to-month", "One year", "Two year"])
+    contract = st.selectbox("Contract", ["Month-to-month","One year","Two year"])
 
 st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------
-# BILLING CARD
+# BILLING
 # -------------------------------
 st.markdown('<div class="card">', unsafe_allow_html=True)
 
-st.markdown('<div class="section">💰 Billing (Simple)</div>', unsafe_allow_html=True)
-
-monthly = st.slider("💵 Monthly bill (₹)", 0, 10000, 1000)
-
-# AUTO CALCULATE
+monthly = st.slider("💵 Monthly Bill (₹)", 0, 10000, 1000)
 total = monthly * tenure
+
 st.info(f"📊 Total paid so far: ₹ {total}")
 
 paper = st.radio("Paperless Billing?", ["Yes", "No"])
 payment = st.selectbox("Payment Method", [
-    "Electronic check",
-    "Mailed check",
-    "Bank transfer (automatic)",
-    "Credit card (automatic)"
+    "Electronic check","Mailed check",
+    "Bank transfer (automatic)","Credit card (automatic)"
 ])
 
 st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------
-# CREATE INPUT (NO MANUAL ENCODING 🔥)
+# CREATE INPUT
 # -------------------------------
 input_df = pd.DataFrame([{
     "gender": gender,
@@ -166,16 +140,12 @@ input_df = pd.DataFrame([{
 }])
 
 # -------------------------------
-# PREDICTION
+# PREDICT
 # -------------------------------
 if st.button("🚀 Analyze Customer"):
 
     pred = model.predict(input_df)[0]
-
-    if hasattr(model, "predict_proba"):
-        prob = model.predict_proba(input_df)[0][1]
-    else:
-        prob = 0.5
+    prob = model.predict_proba(input_df)[0][1]
 
     percentage = round(prob * 100, 2)
 
