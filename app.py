@@ -5,7 +5,7 @@ import pandas as pd
 # -------------------------------
 # LOAD MODEL
 # -------------------------------
-model = joblib.load("model.pkl")
+model = joblib.load("Model.pkl")
 
 # -------------------------------
 # PAGE CONFIG
